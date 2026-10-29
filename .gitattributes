@@ -1,0 +1,13 @@
+# Keep line endings as-is: some files are CRLF (worker.js), some are LF.
+# Force eol=lf only for cross-platform files; leave everything else alone.
+*.js eol=lf
+*.mjs eol=lf
+*.css eol=lf
+*.html eol=lf
+*.json eol=lf
+*.yml eol=lf
+*.yaml eol=lf
+*.md eol=lf
+*.txt eol=lf
+*.sh eol=lf
+* text eol=lf

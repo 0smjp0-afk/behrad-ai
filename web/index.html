@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="abyss" data-layout="classic">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#050B14">
+<title>Behrad AI</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='42' fill='%23061019' stroke='%2338BDF8' stroke-width='7'/><path d='M50 26 C55 44 58 47 76 50 C58 53 55 56 50 74 C45 56 42 53 24 50 C42 47 45 44 50 26 Z' fill='%23EAF7FF'/></svg>">
+<link rel="stylesheet" href="./app.css">
+</head>
+<body>
+
+<!-- ═══ پس‌زمینه زنده: سه لکه آبی/سبز/قرمز + دانه‌بندی ═══ -->
+<div class="bg" aria-hidden="true">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+  <div class="aura"></div>
+  <div class="grain"></div>
+</div>
+
+<!-- ═══ اسپلش ورود ═══ -->
+<div id="splash">
+  <div class="sp-logo"><div class="ring"></div><div class="star">✨</div></div>
+  <div class="sp-name"><span>B</span><span>e</span><span>h</span><span>r</span><span>a</span><span>d</span><span class="sp-ai">&nbsp;AI</span></div>
+  <div class="sp-line"><i></i></div>
+</div>
+
+<!-- ═══ اپ ═══ -->
+<div id="app" hidden>
+
+  <header id="topbar">
+    <button class="tb-btn" id="backBtn" aria-label="بازگشت" hidden>→</button>
+    <div class="tb-brand" id="tbBrand">
+      <div class="tb-logo"></div>
+      <div class="tb-titles">
+        <div class="tb-title" id="tbTitle">Behrad AI</div>
+        <button class="tb-chip" id="modelChip"><span class="dot"></span><span id="modelChipText">مدل</span></button>
+      </div>
+    </div>
+    <div class="tb-title scr-title" id="scrTitle" hidden></div>
+    <div class="tb-actions">
+      <button class="tb-btn glow" id="themeBtn" aria-label="تم">◑</button>
+      <button class="tb-btn" id="statsBtn" aria-label="آمار">📊</button>
+    </div>
+  </header>
+
+  <main id="stage">
+
+    <!-- چت -->
+    <section class="screen on" data-screen="chat">
+      <div class="msgs" id="msgs"></div>
+      <div class="composer-holder">
+        <div class="quick" id="quick" hidden></div>
+        <div class="composer glass" id="composer">
+          <div class="c-row" id="cRow">
+            <button class="c-btn" id="attachBtn" title="عکس یا فایل">＋</button>
+            <div class="c-input">
+              <div class="c-chips" id="attachChips" hidden></div>
+              <textarea id="input" rows="1" placeholder="پیام بفرست ..." enterkeyhint="send"></textarea>
+            </div>
+            <button class="c-btn mic" id="micBtn" title="ویس بگیر">🎙</button>
+            <button class="c-btn send" id="sendBtn" title="ارسال">➤</button>
+          </div>
+          <div class="c-rec" id="cRec" hidden>
+            <button class="c-btn stop" id="recCancel" title="لغو">✕</button>
+            <div class="rec-wave" id="recWave"></div>
+            <div class="rec-time" id="recTime">0:00</div>
+            <div class="rec-dot"></div>
+          </div>
+          <input type="file" id="fileImg" accept="image/*" hidden>
+          <input type="file" id="fileTxt" accept=".txt,.md,.json,.csv,.js,.py,.html,.css,.xml,.yml,.yaml,.log,.ini,.conf" hidden>
+        </div>
+      </div>
+    </section>
+
+    <!-- ویجت‌های هوشمند -->
+    <section class="screen" data-screen="widgets">
+      <div class="scr-head">
+        <h2>ویجت‌ها 🧩 <span class="count" id="wgCount">—</span></h2>
+        <button class="mini-btn" id="wgRefresh" aria-label="تازه‌سازی">🔄</button>
+      </div>
+      <div class="scr-body">
+        <div class="glass form-card wg-maker">
+          <div class="f-row">
+            <input id="wgInput" placeholder="چی بسازم؟ «فردا ساعت ۹ قرص بخورم» یا «آب‌وهوا نشون بده»" dir="auto" enterkeyhint="go">
+            <button class="btn acc sm" id="wgMake">✨ بساز</button>
+          </div>
+          <div class="quick wg-ex" id="wgEx">
+            <button data-ex="فردا ساعت 9 بهم یادآوری کن قرص بخورم">⏰ یادآور فردا ۹</button>
+            <button data-ex="آب و هوا رو نشون بده">🌤 آب‌وهوا</button>
+            <button data-ex="ساعت و تقویم امروز">🕒 ساعت و تقویم</button>
+            <button data-ex="لیست خرید هفته">📝 لیست</button>
+          </div>
+        </div>
+        <div class="wg-board" id="wgBoard"></div>
+      </div>
+    </section>
+
+    <!-- گفتگوها -->
+    <section class="screen" data-screen="threads">
+      <div class="scr-head">
+        <h2>گفتگوها <span class="count" id="thCount"></span></h2>
+        <button class="btn acc sm" id="thNew">＋ گفتگوی تازه</button>
+      </div>
+      <div class="scr-body"><div class="list" id="thList"></div></div>
+    </section>
+
+    <!-- یادآورها -->
+    <section class="screen" data-screen="reminders">
+      <div class="scr-head"><h2>یادآورها ⏰</h2></div>
+      <div class="scr-body">
+        <div class="glass form-card">
+          <div class="f-row">
+            <input id="rmInput" placeholder="مثلاً: روزانه 08:00 ورزش" dir="auto">
+            <button class="btn acc sm" id="rmAdd">افزودن</button>
+          </div>
+          <div class="f-hint">فرمت: <code>18:30 چای</code> · <code>روزانه 08:00 ورزش</code> · <code>45m استراحت</code></div>
+        </div>
+        <div class="list" id="rmList"></div>
+      </div>
+    </section>
+
+    <!-- حافظه -->
+    <section class="screen" data-screen="memory">
+      <div class="scr-head">
+        <h2>حافظه بلندمدت 🧠 <span class="count" id="memCount"></span></h2>
+        <button class="btn danger-ghost sm" id="memClear">پاک همه</button>
+      </div>
+      <div class="scr-body">
+        <div class="glass form-card">
+          <div class="f-row">
+            <input id="memInput" placeholder="خاطره‌ای بسپار ... مثلاً: پروژه ربات با پایتون">
+            <button class="btn acc sm" id="memAdd">افزودن</button>
+          </div>
+        </div>
+        <div class="list" id="memList"></div>
+      </div>
+    </section>
+
+    <!-- استودیو صدا -->
+    <section class="screen" data-screen="voice">
+      <div class="scr-head"><h2>استودیو صدا 🎙</h2></div>
+      <div class="scr-body" id="voiceBody"></div>
+    </section>
+
+    <!-- تنظیمات -->
+    <section class="screen" data-screen="settings">
+      <div class="scr-head"><h2>تنظیمات ⚙️</h2></div>
+      <div class="scr-body" id="setBody"></div>
+    </section>
+
+    <!-- آمار -->
+    <section class="screen" data-screen="stats">
+      <div class="scr-head"><h2>آمار و مصرف 📊</h2></div>
+      <div class="scr-body" id="statsBody"></div>
+    </section>
+
+    <!-- خانه (bento) -->
+    <section class="screen" data-screen="home">
+      <div class="scr-body"><div class="bento" id="bento"></div></div>
+    </section>
+
+  </main>
+
+  <nav id="dock"></nav>
+</div>
+
+<!-- ═══ شیت‌ها / مودال‌ها ═══ -->
+<div class="backdrop" id="backdrop" hidden></div>
+<div class="sheet glass" id="sheet" hidden>
+  <div class="sh-grab"></div>
+  <div class="sh-head"><h3 id="shTitle"></h3><button class="tb-btn" id="shClose">✕</button></div>
+  <div class="sh-body" id="shBody"></div>
+</div>
+
+<!-- ═══ ورود ═══ -->
+<div class="overlay" id="login" hidden>
+  <div class="card glass">
+    <div class="sp-logo sm"><div class="ring"></div><div class="star">✨</div></div>
+    <h1>Behrad <span>AI</span></h1>
+    <p class="sub" id="loginOrigin"></p>
+    <div class="field"><label>رمز ورود</label><input id="loginPw" type="password" placeholder="DASHBOARD_PASSWORD" autocomplete="current-password"></div>
+    <button class="go" id="loginGo">ورود ✈️</button>
+    <div class="status" id="loginSt"></div>
+    <button class="linkish" id="loginSwitch">آدرس ورکر عوض شده؟ تغییر بده</button>
+  </div>
+</div>
+
+<div id="toasts"></div>
+
+<script src="./app-i18n.js"></script>
+<script src="./mock.js"></script>
+<script src="./app-core.js"></script>
+<script src="./app-screens.js"></script>
+</body>
+</html>

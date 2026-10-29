@@ -1,0 +1,32 @@
+{
+  "name": "behrad-ai",
+  "version": "5.4.0",
+  "description": "A bilingual (Persian/English) self-hosted AI assistant for Telegram, running on Cloudflare Workers with D1 storage.",
+  "private": false,
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "build:check": "node tools/build.mjs --check",
+    "check": "node tools/check_syntax.mjs src/worker.js",
+    "symbols": "node tools/diff_symbols.mjs src/worker.js src/worker.js",
+    "test": "node test/run.mjs",
+    "verify": "npm run build:check && npm run check && npm run test"
+  },
+  "devDependencies": {
+    "acorn": "^8.19.0"
+  },
+  "keywords": [
+    "telegram-bot",
+    "cloudflare-workers",
+    "ai",
+    "llm",
+    "persian",
+    "bilingual",
+    "d1",
+    "serverless"
+  ]
+}

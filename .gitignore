@@ -1,0 +1,38 @@
+# ═══════════════════════════════════════════════════════════════
+# Secrets and sensitive files — never commit these
+# .gitignore for behrad-ai
+# ═══════════════════════════════════════════════════════════════
+
+# Node
+node_modules/
+npm-debug.log*
+*.tsbuildinfo
+
+# Secrets & credentials (belt and braces — none of these are used here,
+# but if you keep local configs, they must not be committable)
+.env
+.env.*
+*.pem
+*.key
+*_secret*
+secrets.json
+wrangler.toml.local
+
+# Local wrangler state (contains account ids; template wrangler.example.jsonc is fine)
+.wrangler/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# Test scratch
+/tmp/
