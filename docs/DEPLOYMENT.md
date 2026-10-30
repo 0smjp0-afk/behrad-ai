@@ -33,7 +33,17 @@ This guide takes you from zero to a working bot in ~20 minutes, entirely on Clou
    subdomain (e.g. `ali-dev`); your URL then becomes
    `https://NAME.ali-dev.workers.dev`.
 
-### 3. Create and bind the D1 database
+### 3. Add the Workers AI binding
+
+The bot talks to models through Cloudflare's **Workers AI** binding — no API key needed.
+
+1. Worker → **Settings → Bindings → Add** → **Workers AI**.
+2. **Variable name:** `AI` (exactly).
+3. Save / redeploy.
+
+> Skipping this makes every chat fail with “The AI binding is not set”.
+
+### 4. Create and bind the D1 database
 
 The bot stores everything (users, chats, memory, reminders) in a D1 database.
 
@@ -44,7 +54,7 @@ The bot stores everything (users, chats, memory, reminders) in a D1 database.
    - Database: pick the one you just created.
 3. Redeploy if asked. The bot creates its own tables on first run — there is no SQL to run by hand.
 
-### 4. Set the secrets
+### 5. Set the secrets
 
 Worker → **Settings → Variables and Secrets → Add**. Type: **Secret** (not plaintext) for anything sensitive.
 
@@ -64,7 +74,7 @@ Worker → **Settings → Variables and Secrets → Add**. Type: **Secret** (not
 
 > **Optional tools:** image generation (`/image`) works even without `GEMINI_API_KEY` (a free fallback service). Web search needs `SEARCH_API_KEY`. `FEATURES` is an extra kill-switch: with `FEATURES=search`, only search and everything non-optional stays on; image generation, TTS/STT, translation, summarization and YouTube are off for **all** users.
 
-### 5. Connect Telegram
+### 6. Connect Telegram
 
 1. Worker → **Settings → Triggers → Add Cron Trigger** → `* * * * *` (**every minute**).
    Reminders only fire on a cron tick, so a 5-minute schedule would deliver them up to
@@ -83,7 +93,7 @@ curl "https://api.telegram.org/bot<TOKEN>/setWebhook?url=<WORKER_URL>/webhook"
 
 3. **Message your bot on Telegram.** First message → access denied (correct — you haven't been added yet as anything but admin; admin works immediately).
 
-### 6. Verify
+### 7. Verify
 
 - `/start` in Telegram → main panel appears.
 - `/ping` → service health.
@@ -91,17 +101,17 @@ curl "https://api.telegram.org/bot<TOKEN>/setWebhook?url=<WORKER_URL>/webhook"
 - `https://YOUR-WORKER.workers.dev/dashboard` → enter `DASHBOARD_PASSWORD`.
 - `https://YOUR-WORKER.workers.dev/app` → the Android app shell / PWA.
 
-### 7. Language
+### 8. Language
 
 - **Per user:** ⚙️ Settings → 🇮🇷 فارسی / 🇬🇧 English. Stored per user; default `fa`.
 - **Dashboard & app** follow the admin's language.
 - The bot's *replies* follow the persona and the user's language choice; system prompts are fully bilingual.
 
-### 8. Adding users
+### 9. Adding users
 
 Only `ADMIN_ID` works at first. As admin: open the bot's user panel (👥) and add Telegram user IDs to the allow-list. Users can then pick their own language, model and settings — within the limits you set (`dailyLimit`, image quotas).
 
-### 9. Updating
+### 10. Updating
 
 The deployable artifact is a single file, `src/worker.js` — it is generated from `src/modules/` and the dashboard in `web/` (run `npm run build`). To update: paste the new `src/worker.js` and deploy. User data survives — the schema is migrated lazily.
 
@@ -153,7 +163,17 @@ Everything above runs on the Cloudflare free tier (100k requests/day, D1 include
    اگر اولین ورکرتان است، کلادفلر اول از شما یک زیردامنهٔ `workers.dev` می‌خواهد
    (مثلاً `ali-dev`)؛ آدرستان می‌شود `https://NAME.ali-dev.workers.dev`.
 
-### ۳. ساخت و اتصال D1
+### ۳. افزودن بایندینگ Workers AI
+
+ربات از طریق بایندینگ **Workers AI** کلادفلر با مدل‌ها حرف می‌زند — بدون هیچ کلید API.
+
+۱. ورکر ← **Settings ← Bindings ← Add** ← **Workers AI**.
+۲. **Variable name:** `AI` (دقیقاً همین).
+۳. Save / Deploy.
+
+> اگر این را رد کنی، هر چت با خطای «binding AI تنظیم نشده» رد می‌شود.
+
+### ۴. ساخت و اتصال D1
 
 ربات همه‌چیز (کاربران، گفتگوها، حافظه، یادآورها) را در D1 می‌گذارد.
 
@@ -164,7 +184,7 @@ Everything above runs on the Cloudflare free tier (100k requests/day, D1 include
    - دیتابیس: همان که ساختید.
 3. اگر خواست، دوباره Deploy کنید. جدول‌ها را خود ربات دفعهٔ اول می‌سازد — هیچ SQL دستی لازم نیست.
 
-### ۴. ست‌کردن رازها
+### ۵. ست‌کردن رازها
 
 ورکر ← **Settings ← Variables and Secrets ← Add**. برای هر چیز حساس نوع را **Secret** بگذارید (نه Plaintext).
 
@@ -184,7 +204,7 @@ Everything above runs on the Cloudflare free tier (100k requests/day, D1 include
 
 > **ابزارهای اختیاری:** تولید تصویر (`/image`) حتی بدون `GEMINI_API_KEY` هم کار می‌کند (فالبک رایگان). سرچ وب به `SEARCH_API_KEY` نیاز دارد. `FEATURES` کلیدِ قطعِ کلی است: با `FEATURES=search` فقط سرچ و بقیهٔ امکاناتِ غیرِ اختیاری روشن می‌ماند؛ تصویر، صدا، ترجمه، خلاصه‌سازی و یوتیوب برای **همهٔ** کاربران خاموش است.
 
-### ۵. وصل‌کردن تلگرام
+### ۶. وصل‌کردن تلگرام
 
 1. ورکر ← **Settings ← Triggers ← Add Cron Trigger** ← `* * * * *` (**هر دقیقه**).
    یادآورها فقط با تیکِ cron شلیک می‌شوند؛ با فاصلهٔ ۵ دقیقه تا ۵ دقیقه دیر می‌رسند.
@@ -203,7 +223,7 @@ curl "https://api.telegram.org/bot<TOKEN>/setWebhook?url=https://YOUR-WORKER.wor
 
 3. **به ربات پیام بدهید.** اولین پیام → «دسترسی ندارید» طبیعی است؛ ادمین بلافاصله دسترسی دارد.
 
-### ۶. بررسی
+### ۷. بررسی
 
 - `/start` در تلگرام ← پنل اصلی باز شود.
 - `/ping` ← سلامت سرویس‌ها.
@@ -211,16 +231,16 @@ curl "https://api.telegram.org/bot<TOKEN>/setWebhook?url=https://YOUR-WORKER.wor
 - `https://YOUR-WORKER.workers.dev/dashboard` ← ورود با `DASHBOARD_PASSWORD`.
 - `https://YOUR-WORKER.workers.dev/app` ← اپ اندروید / PWA.
 
-### ۷. زبان
+### ۸. زبان
 
 - **هر کاربر:** ⚙️ تنظیمات ← 🇮🇷 فارسی / 🇬🇧 English. برای هر کاربر جدا ذخیره می‌شود؛ پیش‌فرض `fa`.
 - داشبورد و اپ از زبانِ ادمین پیروی می‌کنند؛ پرامپت‌های سیستمی هم در هر دو زبان کامل‌اند.
 
-### ۸. افزودن کاربر
+### ۹. افزودن کاربر
 
 اول فقط `ADMIN_ID` کار می‌کند. به‌عنوان ادمین، پنل «کاربران مجاز» (👥) را باز کنید و آیدی عددی بدهید. کاربرها بعدش زبان، مدل و تنظیماتِ خودشان را دارند — در محدودهٔ سقف‌هایی که شما می‌گذارید (`dailyLimit` و سهمیهٔ عکس).
 
-### ۹. به‌روزرسانی
+### ۱۰. به‌روزرسانی
 
 فایلِ قابلِ استقرار، یک فایلِ واحد است: `src/worker.js` — که از `src/modules/` و داشبوردِ `web/` ساخته می‌شود (`npm run build`). برای به‌روزرسانی فقط فایلِ جدید را بچسبانید و Deploy کنید. دادهٔ کاربرها می‌ماند — مهاجرتِ اسکیمای خودکار است.
 

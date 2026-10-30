@@ -145,12 +145,14 @@ async function handleCommand(env, budget, chatId, uid, m, text, u, isGroup) {
       return true;
     }
     case '/weather': {
+      if (!toolAvailable(env, 'weather')) return await sendMsg(env, budget, chatId, L(env, 'm0wr_off'));
       try {
         const w = await toolWeather(env);
         return await sendMsg(env, budget, chatId, L(env, 'm13r3zno', esc(w)));
       } catch (e) { return await sendMsg(env, budget, chatId, EMOJI.err + ' ' + esc(String((e && e.message) || e).slice(0, 160))); }
     }
     case '/crypto': {
+      if (!toolAvailable(env, 'crypto')) return await sendMsg(env, budget, chatId, L(env, 'm0cr_off'));
       try {
         const c = await toolCrypto(env);
         return await sendMsg(env, budget, chatId, L(env, 'm02n8h7e', esc(c)));

@@ -13,6 +13,8 @@ const acorn = require('acorn');
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const FA = /[؀-ۿ]/;
+const OWNER_RAW = "بهراد";
+function src2() { return fs.readFileSync(path.join(ROOT, "src", "worker.js"), "utf8"); }
 
 let pass = 0, fail = 0;
 const ok = (name, cond, extra) => {
@@ -153,6 +155,10 @@ section('bilingual module constants');
   ok('CORE_EN uses {{brand}}', M.CORE_SYSTEM_PROMPT_EN.includes('{{brand}}'));
   ok('HELP_EN uses {{brand}}', M.HELP_TEXT_EN.includes('{{brand}}'));
   ok('FA core has no raw owner name', !M.CORE_SYSTEM_PROMPT.includes('بهراد'));
+  /* قانون امنیتی: نامِ مالک هرگز در سورس/باندل نباشد (فقط از راز). */
+  ok('no raw owner name in any module source', !src2().includes(OWNER_RAW));
+  ok('no raw owner name in built worker.js', !fs.readFileSync(path.join(ROOT, "src", "worker.js"), "utf8").includes(OWNER_RAW));
+  ok('no raw owner name in web sources', ['app-i18n.js','app-screens.js','mock.js','app-core.js'].every((f) => !fs.readFileSync(path.join(ROOT, "web", f), "utf8").includes(OWNER_RAW)));
   ok('FA help has no raw owner name', !M.HELP_TEXT.includes('بهراد'));
   ok('WD_EN is English', Array.isArray(ctx.__WD_EN) && !FA.test(ctx.__WD_EN.join()));
   void M;
@@ -198,7 +204,9 @@ await runIntegration();
 async function runIntegration() {
   try {
     const mod = await import("./integration.mjs");
-    void mod;
+    const r = mod.integrationResult;
+    if (!r || typeof r.pass !== "number") { fail++; console.log("✘ integration suite — نتیجه برنگشت"); return; }
+    pass += r.pass; fail += r.fail;
   } catch (e) { fail++; console.log("✘ integration suite — " + e.message); }
 }
 

@@ -147,7 +147,7 @@ async function readPage(url, maxChars = CFG.URL_PAGE_CHARS, settings = null) {
   /* یوتیوب: مسیر زیرنویس، که متن کامل و تمیز می‌دهد (اگر بود).
      🔧 v5.4: اگر کاربر «خلاصه یوتیوب» (ytSum) را خاموش کرده باشد، از مسیر
      زیرنویس رد نمی‌شویم و صفحه مثل هر سایت دیگری خوانده می‌شود. */
-  if (/youtu\.?be/i.test(host) && (!settings || settings.ytSum !== false)) {
+  if (/youtu\.?be/i.test(host) && toolAvailable(env, 'yt') && (!settings || settings.ytSum !== false)) {
     const yt = await youtubeTranscript(url, CFG.YT_MAX_CHARS).catch(() => null);
     if (yt) {
       return { url, host, text: '🎬 ' + yt.title + ' (' + yt.lang + ')\n\n' + yt.text, truncated: false, kind: 'youtube' };

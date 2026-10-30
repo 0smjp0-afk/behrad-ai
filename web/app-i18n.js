@@ -330,13 +330,13 @@ const WEB_I18N = {
   " <span style=\"color:var(--dim);font-weight:400\">(۳۰ گزینه، فارسی fa)</span>": " <span style=\"color:var(--dim);font-weight:400\">(30 options, Persian fa)</span>",
   "<div class=\"sec\"><div class=\"sec-t\">تست</div><div class=\"sec-box\">": "<div class=\"sec\"><div class=\"sec-t\">Test</div><div class=\"sec-box\">",
   "<div class=\"row\"><span class=\"ic\">🎧</span><div class=\"mid\"><div class=\"t1\">پخش نمونه با وویس فعلی</div>": "<div class=\"row\"><span class=\"ic\">🎧</span><div class=\"mid\"><div class=\"t1\">Play a sample with the current voice</div>",
-  "<div class=\"t2\">«سلام بهراد! من دستیار صوتی تو هستم...»</div></div>": "<div class=\"t2\">\"Hello {{owner}}! I'm your voice assistant...\"</div></div>",
+  "<div class=\"t2\">«سلام {{owner}}! من دستیار صوتی تو هستم...»</div></div>": "<div class=\"t2\">\"Hello {{owner}}! I'm your voice assistant...\"</div></div>",
   "<button class=\"btn acc sm\" data-act=\"do-test\">تست 🎧</button></div></div></div>": "<button class=\"btn acc sm\" data-act=\"do-test\">Test 🎧</button></div></div></div>",
   "موتور عوض شد ✅": "Engine changed ✅",
   "مدل فهم عوض شد ✅": "Understanding model changed ✅",
   "مدل صدا عوض شد ✅": "Voice model changed ✅",
   "وویس: ": "Voice: ",
-  "سلام بهراد! من دستیار صوتی تو هستم. این صدای ": "Hello {{owner}}! I'm your voice assistant. This is the voice of ",
+  "سلام {{owner}}! من دستیار صوتی تو هستم. این صدای ": "Hello {{owner}}! I'm your voice assistant. This is the voice of ",
   " است.": ".",
   "تست ناموفق": "Test failed",
   "تست 🎧": "Test 🎧",
@@ -503,12 +503,12 @@ const WEB_I18N = {
   "پروژه ربات": "Bot project",
   "ایده‌های نوشتن": "Writing ideas",
   "سلام! کیستی؟": "Hi! Who are you?",
-  "سلام بهراد جان! 👋 من دستیار شیشه‌ای تو هستم — همان مغز ورکر Cloudflare، فقط با ظاهر تازه.\n\n**بله:**\n- حافظه بلندمدت 🧠\n- سرچ وب با `/web`\n- ویس دوطرفه 🎙\n\n```js\nconsole.log(\"Liquid Glass ✨\");\n```\n\nبپرس تا جواب بدهم.": "Hi there! 👋 I'm your glass assistant — the same Cloudflare worker brain, just with a fresh look.\n\n**Yes:**\n- Long-term memory 🧠\n- Web search with `/web`\n- Two-way voice 🎙\n\n```js\nconsole.log(\"Liquid Glass ✨\");\n```\n\nAsk and I'll answer.",
+  "سلام {{owner}} جان! 👋 من دستیار شیشه‌ای تو هستم — همان مغز ورکر Cloudflare، فقط با ظاهر تازه.\n\n**بله:**\n- حافظه بلندمدت 🧠\n- سرچ وب با `/web`\n- ویس دوطرفه 🎙\n\n```js\nconsole.log(\"Liquid Glass ✨\");\n```\n\nبپرس تا جواب بدهم.": "Hi there! 👋 I'm your glass assistant — the same Cloudflare worker brain, just with a fresh look.\n\n**Yes:**\n- Long-term memory 🧠\n- Web search with `/web`\n- Two-way voice 🎙\n\n```js\nconsole.log(\"Liquid Glass ✨\");\n```\n\nAsk and I'll answer.",
   "هوای نیشابور چطوره؟": "How's the weather in Nishapur?",
   "🌤 **هوای نیشابور**\n\n- دما: ۲۴ درجه، نیمه‌ابری\n- باد: ۱۱ کیلومتر بر ساعت\n- رطوبت: ۳۸٪\n\n> برای پیش‌بینی ۲ روز آینده همین‌جا بپرس.": "🌤 **Nishapur weather**\n\n- Temperature: 24 degrees, partly cloudy\n- Wind: 11 kilometers per hour\n- Humidity: 38%\n\n> Ask right here for the 2-day forecast.",
   "یادآور روزانه ۸ صبح ورزش بذار": "Set a daily 8 AM workout reminder",
   "⏰ ثبت شد: **روزانه 08:00 ورزش** 🔁\n\nهر صبح ساعت ۸ به وقت تهران یادت می‌اندازم.": "⏰ Saved: **Daily 08:00 workout** 🔁\n\nI'll remind you every morning at 8 Tehran time.",
-  "اسم من بهراد است و پروژه اصلی‌ام ربات تلگرام AI است.": "My name is {{owner}} and my main project is an AI Telegram bot.",
+  "اسم من {{owner}} است و پروژه اصلی‌ام ربات تلگرام AI است.": "My name is {{owner}} and my main project is an AI Telegram bot.",
   "پروژه فعلی: اپ اندروید شیشه‌ای متصل به ورکر.": "Current project: a glassy Android app connected to the worker.",
   "زبان ترجیحی همیشه فارسی، جواب کوتاه و بی‌حاشیه.": "Preferred language is always Persian, short and to-the-point answers.",
   "چای دم کن": "Brew tea",
@@ -565,10 +565,21 @@ const WEB_I18N = {
 
 };
 
+/* جای‌نگهدارهای {{owner}}/{{brand}} را با نامِ مالک پر می‌کند.
+   نام از /api/v1/state (رازِ OWNER_NAME روی سرور) می‌آید — هیچ نامی در سورس نیست. */
+function fillOwner(s) {
+  if (s == null || s.indexOf('{{') < 0) return s;
+  let o = '', b = '';
+  try { o = (typeof S !== 'undefined' && S.owner) || ''; b = (typeof S !== 'undefined' && S.brand) || ''; } catch (e) {}
+  if (!o) o = 'Owner';
+  if (!b) b = o + ' AI';
+  return String(s).split('{{owner}}').join(o).split('{{brand}}').join(b);
+}
+
 /* W(fa) — متنِ فارسی را در locale=en به انگلیسی برمی‌گرداند.
    در همهٔ رشته‌های وب‌اپ دورِ متن فارسی می‌نشیند (کدمودِ build). */
 function W(fa) {
-  if (curLocale() !== 'en') return fa;
-  const en = WEB_I18N[fa];
-  return en != null && en !== '' ? en : fa;
+  const en = curLocale() === 'en' ? WEB_I18N[fa] : null;
+  const s = en != null && en !== '' ? en : fa;
+  return fillOwner(s);
 }

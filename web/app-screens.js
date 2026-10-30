@@ -935,7 +935,7 @@ function renderVoice() {
 
     W("<div class=\"sec\"><div class=\"sec-t\">تست</div><div class=\"sec-box\">") +
     W("<div class=\"row\"><span class=\"ic\">🎧</span><div class=\"mid\"><div class=\"t1\">پخش نمونه با وویس فعلی</div>") +
-    W("<div class=\"t2\">«سلام بهراد! من دستیار صوتی تو هستم...»</div></div>") +
+    W("<div class=\"t2\">«سلام {{owner}}! من دستیار صوتی تو هستم...»</div></div>") +
     '<div class="eq" id="voiceEq" hidden>' + '<i></i>'.repeat(7) + '</div>' +
     W("<button class=\"btn acc sm\" data-act=\"do-test\">تست 🎧</button></div></div></div>"),
   ].join('');
@@ -992,7 +992,7 @@ function wireVoice() {
       try {
         const res = await API.req('/api/v1/tts', {
           method: 'POST',
-          body: { text: W("سلام بهراد! من دستیار صوتی تو هستم. این صدای ") + (S.settings.voiceName || 'Kore') + W(" است.") },
+          body: { text: W("سلام {{owner}}! من دستیار صوتی تو هستم. این صدای ") + (S.settings.voiceName || 'Kore') + W(" است.") },
         });
         const blob = await res.blob();
         if (curAudio) curAudio.pause();

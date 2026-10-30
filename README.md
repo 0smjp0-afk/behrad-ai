@@ -24,7 +24,8 @@
 
 A complete AI assistant that lives in your Telegram — chat, images, voice, memory, reminders, web search and more — deployed as **one JavaScript file** on Cloudflare's free tier. No server, no database to manage, no API keys in the code. You bring your own model access:
 
-- **Zero-config path:** Cloudflare Workers AI models work out of the box (free tier included).
+- **No API key needed:** Cloudflare Workers AI models work out of the box once you add the
+  `AI` binding (one click, free tier included) — no key, no account to sign up for.
 - **Bring-your-own:** any OpenAI-compatible service (OpenRouter, Groq, DeepSeek, vLLM, Ollama, …) plugs in with a base URL + key.
 
 ### Highlights
@@ -50,8 +51,10 @@ Otherwise, the full walkthrough is in the **[Deployment Guide](docs/DEPLOYMENT.m
 1. **Create the bot:** talk to [@BotFather](https://t.me/BotFather) → `/newbot` → copy the token.
 2. **Get a Cloudflare account** (free).
 3. **Deploy the worker:** paste `src/worker.js` into the Cloudflare dashboard's Worker editor.
-4. **Create a D1 database** and bind it as `DB` (step-by-step in the guide).
-5. **Set the secrets** (Worker → Settings → Variables):
+4. **Add the Workers AI binding** (no key needed): Worker → Settings → Bindings → Add →
+   **Workers AI**, variable name **`AI`**. Without it, chat fails with “The AI binding is not set”.
+5. **Create a D1 database** and bind it as `DB` (step-by-step in the guide).
+6. **Set the secrets** (Worker → Settings → Variables):
 
    | Secret | Required | Purpose |
    |---|---|---|
@@ -64,8 +67,8 @@ Otherwise, the full walkthrough is in the **[Deployment Guide](docs/DEPLOYMENT.m
    | `GEMINI_API_KEY` | optional | Quality images, TTS/STT, translation |
    | `SEARCH_API_KEY` | optional | Web search via Tavily |
    | `FEATURES` | optional | Turn tools off deployment-wide (e.g. `search,img`) |
-6. **Point BotFather at the worker:** set the webhook to `https://YOUR-WORKER.workers.dev/webhook`.
-7. Message your bot — done. Switch language anytime in ⚙️ Settings.
+7. **Point BotFather at the worker:** set the webhook to `https://YOUR-WORKER.workers.dev/webhook`.
+8. Message your bot — done. Switch language anytime in ⚙️ Settings.
 
 ### Repository layout
 
@@ -115,7 +118,8 @@ the full text is in [LICENSE](LICENSE).
 
 یک دستیار هوشمند کامل که داخل تلگرام زندگی می‌کند — چت، عکس، ویس، حافظه، یادآور، سرچ وب و… — که به‌صورت **یک فایل جاوااسکریپت** روی Cloudflare مستقر می‌شود. بدون سرور، بدون دیتابیسِ مدیریتی، بدون کلید داخل کد:
 
-- **مسیرِ بدون‌تنظیم:** مدل‌های Workers AI خودِ کلادفلر از همان اول کار می‌کنند (پلن رایگان هم کافی است).
+- **بدون هیچ کلید API:** مدل‌های Workers AI خودِ کلادفلر با یک‌بار افزودن بایندینگ `AI`
+  کار می‌کنند (یک کلیک، پلن رایگان هم کافی است) — بدون کلید و بدون ثبت‌نام در سرویس دیگری.
 - **سرویس دلخواه:** هر سرویس سازگار با OpenAI (OpenRouter، Groq، DeepSeek، vLLM، Ollama و…) با آدرس پایه + کلید وصل می‌شود.
 
 ### ویژگی‌ها
@@ -141,8 +145,10 @@ the full text is in [LICENSE](LICENSE).
 1. **ساخت ربات:** از [@BotFather](https://t.me/BotFather) با `/newbot` ربات بسازید و توکن را کپی کنید.
 2. **حساب کلادفلر** (رایگان) بسازید.
 3. **استقرار ورکر:** محتوای `src/worker.js` را در ادیتور Worker داشبورد کلادفلر بچسبانید.
-4. **ساخت دیتابیس D1** و اتصالش با نام `DB` (مرحله‌به‌مرحله در راهنما).
-5. **ست‌کردن رازها** (Worker ← Settings ← Variables):
+4. **افزودن بایندینگِ Workers AI** (بدون کلید): ورکر ← Settings ← Bindings ← Add ←
+   **Workers AI** با نام متغیر **`AI`**. بدون آن، چت با خطای «binding AI تنظیم نشده» رد می‌شود.
+5. **ساخت دیتابیس D1** و اتصالش با نام `DB` (مرحله‌به‌مرحله در راهنما).
+6. **ست‌کردن رازها** (Worker ← Settings ← Variables):
 
    | راز | اجباری؟ | کاربرد |
    |---|---|---|
@@ -155,8 +161,8 @@ the full text is in [LICENSE](LICENSE).
    | `GEMINI_API_KEY` | اختیاری | تصویر باکیفیت، TTS/STT، ترجمه |
    | `SEARCH_API_KEY` | اختیاری | سرچ وب با Tavily |
    | `FEATURES` | اختیاری | خاموش‌کردن ابزارها در کل استقرار (مثل `search,img`) |
-6. **وصل‌کردن BotFather به ورکر:** آدرس webhook را روی `https://YOUR-WORKER.workers.dev/webhook` بگذارید.
-7. به ربات پیام بدهید — تمام. زبان را هر وقت خواستید از ⚙️ تغییر دهید.
+7. **وصل‌کردن BotFather به ورکر:** آدرس webhook را روی `https://YOUR-WORKER.workers.dev/webhook` بگذارید.
+8. به ربات پیام بدهید — تمام. زبان را هر وقت خواستید از ⚙️ تغییر دهید.
 
 ### ساختار مخزن
 

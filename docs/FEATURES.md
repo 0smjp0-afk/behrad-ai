@@ -86,7 +86,6 @@ Every one of these has a Persian comment next to its definition in `SETTINGS_DEF
 | `TELEGRAM_BOT_TOKEN` | the bot itself |
 | `ADMIN_ID` | admin identity |
 | `OWNER_NAME` / `OWNER_NAME_EN` | bot persona name |
-| `WEBHOOK_SECRET` | صحتِ درخواست‌های وبهوک |
 | `WEBHOOK_SECRET` | verifies Telegram webhook requests |
 | `DASHBOARD_PASSWORD` | dashboard |
 | `GEMINI_API_KEY` | images, TTS/STT, translation, summaries |
@@ -171,6 +170,7 @@ Every one of these has a Persian comment next to its definition in `SETTINGS_DEF
 | `ADMIN_ID` | شناسهٔ ادمین |
 | `OWNER_NAME` / `OWNER_NAME_EN` | نامِ شخصیت ربات |
 | `DASHBOARD_PASSWORD` | داشبورد وب |
+| `WEBHOOK_SECRET` | صحتِ درخواست‌های وبهوک تلگرام |
 | `GEMINI_API_KEY` | تصویر، صدا، ترجمه |
 | `SEARCH_API_KEY` | سرچ وب |
 | `FEATURES` | کلیدِ خاموش/روشنِ ابزارهای اختیاری در کل استقرار |

@@ -55,6 +55,11 @@ section('secrets — FEATURES و کلیدهای اختیاری');
   ok('FEATURES=search → img خاموش', H.featOn({ FEATURES: 'search' }, 'img') === false);
   ok('toolAvailable(search) بدون کلید = false', H.toolAvailable({ FEATURES: 'search' }, 'search') === false);
   ok('toolAvailable(search) با کلید = true', H.toolAvailable({ FEATURES: 'search', SEARCH_API_KEY: 'k' }, 'search') === true);
+  /* گیت‌ها باید در سطحِ کد هم واقعاً اعمال شوند، نه فقط در مستندات. */
+  ok('FEATURES=none → stt خاموش', H.featOn({ FEATURES: 'none' }, 'stt') === false);
+  ok('FEATURES=none → yt خاموش', H.featOn({ FEATURES: 'none' }, 'yt') === false);
+  ok('FEATURES=none → weather خاموش', H.featOn({ FEATURES: 'none' }, 'weather') === false);
+  ok('FEATURES=none → crypto خاموش', H.featOn({ FEATURES: 'none' }, 'crypto') === false);
   ok('maskKey کلید را ماسک می‌کند', (() => { const m = H.maskKey('sk-abcdefghijklmnop'); return m && m !== 'sk-abcdefghijklmnop' && m.includes('…'); })());
 }
 
@@ -70,6 +75,14 @@ section('دسترسی — allow-list');
   ok('بدون ADMIN_ID هیچ‌کس مجاز نیست', (await h2.isAllowed({ ...env, ADMIN_ID: '' }, '1')) === false);
 }
 
+/* گیتِ stt در سطحِ تابع: با FEATURES=none باید throw کند. */
+{
+  const { H: hg, env } = loadWorker(['transcribeVoice']);
+  let threw = false;
+  try { await hg.transcribeVoice({ ...env, FEATURES: 'none' }, new Uint8Array([1,2,3]), {}, 'audio/ogg'); } catch { threw = true; }
+  ok('transcribeVoice با FEATURES=none رد می‌شود', threw);
+}
+
 /* ═══════════ ۴) D1: ذخیره/خواندن/حذف/انقضا ═══════════ */
 section('D1 — ذخیره‌سازی');
 {
@@ -82,7 +95,12 @@ section('D1 — ذخیره‌سازی');
   ok('حذف کلید', (await h3.kvGet(env, 'k1')) === null);
   await h3.kvPut(env, 'exp', 1, -10);   // ممیزی: ttl کمتر از ۶۰ ثانیه → حداقل ۶۰
   ok('TTL حداقل ۶۰ ثانیه اعمال می‌شود', (await h3.kvGet(env, 'exp')) !== undefined);
-  ok('ensureDb بدون DB خطا می‌دهد', await (async () => { try { await h3.kvPut({ ...env, DB: null }, 'x', 1); return false; } catch { return true; } })() === false || true);
+  /* kvPut خطا را می‌بلعد (لاگ می‌کند) و بی‌صدا no-op است — نه کرش، نه نوشتن. */
+  const dbless = { DB: null };
+  let threw = false;
+  try { await h3.kvPut(dbless, 'x', 1); } catch { threw = true; }
+  ok('kvPut بدون DB کرش نمی‌کند', threw === false);
+  ok('kvPut بدون DB چیزی نمی‌نویسد', (await h3.kvGet(dbless, 'x')) === null);
 }
 
 /* ═══════════ ۵) کاربر: تنظیمات پیش‌فرض + زبان ═══════════ */
@@ -173,7 +191,7 @@ section('Worker.fetch — مسیرها');
   const bad = await w.fetch(new Request('https://x.workers.dev/webhook', {
     method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({}),
   }), envSec, makeCtx());
-  ok('وبهوک با secret غلط رد می‌شود', bad.status !== 200 || true, String(bad.status));
+  ok('وبهوک با secret غلط ۴۰۳ می‌گیرد', bad.status === 403, 'status=' + bad.status);
 
   /* وبهوک درست */
   const gc = makeCtx();

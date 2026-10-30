@@ -8,13 +8,15 @@ versions follow [Semantic Versioning](https://semver.org/).
 
 ### Changed — repository structure (breaking for contributors only)
 - **The monolith is gone.** `src/worker.js` used to be a single ~7,600-line file.
-  It is now built from **25 readable ES-module files** in `src/modules/`:
+  It is now built from **26 readable module files** in `src/modules/` (27 files
+  counting the file header):
   `01-core-constants`, `02-i18n-runtime`, `03-settings`, `04-utils`,
   `05-storage-d1`, `06-vision`, `07-telegram`, `08-llm`, `09-link-reader`,
   `10-voice`, `11-tools`, `12-reminders`, `13-circuit-breaker`, `14-users`,
   `15-markdown-typing`, `16-chat-core`, `17-menus`, `18-export-backup`,
   `19-dashboard`, `20-cron`, `21-webapp-api`, `22-handlers`,
-  `23-reminder-intent`, `24-inline-mode` (plus `00-header`).
+  `21b-widgets`, `22b-messages`, `23-reminder-intent`, `24-inline-mode`
+  (plus `00-header`).
   Deployment is unchanged: `npm run build` still emits **one** file to paste
   into Cloudflare.
 

@@ -130,6 +130,8 @@ async function downloadTelegramFileBytes(env, budget, fileId, maxBytes) {
   return buf;
 }
 async function transcribeVoice(env, audioBytes, settings, mime) {
+  /* گیتِ استقرار: اگر مالک صدا را خاموش کرده باشد، هیچ راهی برای فهم ویس نیست. */
+  if (!toolAvailable(env, 'stt')) throw new Error(L(env, 'm0stt_off'));
   // گوگل اول (اگر انتخاب شده و کلید هست)، وگرنه Whisper کلادفلر
   const sttChain = [];
   if (settings && settings.sttModel) sttChain.push(settings.sttModel);

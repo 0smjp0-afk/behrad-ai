@@ -199,6 +199,10 @@ async function appRoute(env, request, url, p, method) {
     return jsonRes({
       version: VERSION,
       uid: uid,
+      /* نامِ مالک فقط از راز می‌آید؛ کلاینت {{owner}}/{{brand}} را با همین پر می‌کند
+         (هیچ نامی در سورسِ وب‌اپ نیست — قانونِ امنیتیِ پروژه). */
+      owner: ownerName(env),
+      brand: ownerBrand(env),
       settings: u.st,
       thread: u.thread,
       threads: u.threads,

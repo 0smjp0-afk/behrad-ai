@@ -1,0 +1,25 @@
+# gitleaks config — keep the scan focused on real leaks.
+# The repo intentionally contains only *names* of secrets (in docs), never values.
+title = "behrad-ai"
+
+[allowlist]
+description = "Documentation and example placeholders"
+paths = [
+  '''README\.md''',
+  '''docs/.*\.md''',
+  '''SECURITY\.md''',
+  '''CHANGELOG\.md''',
+  '''CONTRIBUTING\.md''',
+  '''^\.github/''',
+]
+regexes = [
+  '''<TOKEN>''',
+  '''TELEGRAM_BOT_TOKEN''',
+  '''DASHBOARD_PASSWORD''',
+  '''GEMINI_API_KEY''',
+  '''SEARCH_API_KEY''',
+  '''OWNER_NAME''',
+  '''WEBHOOK_SECRET''',
+  '''ghp_\*+''',
+  '''sk-…''',
+]

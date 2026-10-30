@@ -17,7 +17,7 @@
 5. [ساخت «Worker»](#۵)
 6. [چسباندن کد](#۶)
 7. [ساخت دیتابیس D1](#۷)
-8. [وصل کردن دیتابیس به Worker](#۸)
+8. [وصل کردن دیتابیس و موتور AI به Worker](#۸)
 9. [گذاشتن رمزها (Secrets)](#۹)
 10. [روشن کردن وبهوک (تا ربات جواب بدهد)](#۱۰)
 11. [تنظیم Cron برای یادآورها](#۱۱)
@@ -147,15 +147,24 @@
 ---
 
 <a id="۸"></a>
-## ۸) وصل کردن دیتابیس به Worker
+## ۸) وصل کردن دیتابیس و موتور هوش مصنوعی به Worker
+
+**اول موتور هوش مصنوعی** (بدون این، ربات به هیچ سؤالی جواب نمی‌دهد):
 
 1. برگرد به **Workers & Pages** → روی اسم ورکرت (`my-ai-bot`) کلیک کن.
 2. تب **Settings** را بزن.
-3. بخش **Bindings** → **Add** (یا Add binding) → **D1 database** را انتخاب کن.
-4. **Variable name** را دقیقاً بنویس: `DB`
+3. بخش **Bindings** → **Add** → **Workers AI** را انتخاب کن.
+4. **Variable name** را دقیقاً بنویس: `AI`
+   (بدون هیچ کلید API — مدل‌ها مال خود کلادفلر هستند.)
+5. **Save** / **Deploy**.
+
+**حالا دیتابیس:**
+
+6. همان بخش **Bindings** → **Add** → **D1 database** را انتخاب کن.
+7. **Variable name** را دقیقاً بنویس: `DB`
    (حروف بزرگ. مهم است! اگر چیز دیگری بنویسی ربات کار نمی‌کند.)
-5. از لیست، `my-bot-data` را انتخاب کن.
-6. **Deploy** / **Save** را بزن.
+8. از لیست، `my-bot-data` را انتخاب کن.
+9. **Deploy** / **Save** را بزن.
 
 ---
 
@@ -344,8 +353,9 @@ Storage & Databases → D1 SQL Database → Create database → name it. The bot
 creates its own tables.
 
 ### 8. Bind it
-Worker → Settings → Bindings → Add → D1 database → variable name must be
-exactly `DB`.
+First **Workers AI** (no key needed): Settings → Bindings → Add → Workers AI →
+variable name exactly `AI`. Without it, chat fails with “The AI binding is not set”.
+Then **D1**: Bindings → Add → D1 database → variable name exactly `DB`.
 
 ### 9. Set the secrets
 Worker → Settings → Variables and Secrets → Add. Set `TELEGRAM_BOT_TOKEN`,
@@ -371,7 +381,7 @@ in with `DASHBOARD_PASSWORD`. Done!
 
 ### 13. Common problems
 Same table as the Persian section above: no reply (webhook), "access denied"
-(`ADMIN_ID` must be a number), `Binding "DB"` missing (step 8), `429` (free-tier
+(`ADMIN_ID` must be a number), missing `Binding "AI"`/`"DB"` (step 8), `429` (free-tier
 Neurons), long replies cut off (free-tier time limit), reminders not firing
 (Cron), dashboard login loop (password/cookies).
 

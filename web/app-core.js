@@ -398,6 +398,8 @@ async function bootState(fast) {
   S.memCount = st.memCount || 0;
   S.memMax = st.memMax || 50;
   S.version = st.version || '';
+  S.owner = st.owner || '';
+  S.brand = st.brand || '';
   S.briefHour = st.briefHour;
   S.gemModels = st.gemModels || null; // لیست واقعی مدل‌های TTS/STT/تصویر از سرور
   updateModelChip();

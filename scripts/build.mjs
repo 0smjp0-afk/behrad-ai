@@ -62,16 +62,22 @@ function buildAssets() {
   return { line: 'const APP_ASSETS = ' + JSON.stringify(assets) + ';', count: files.length, total, files };
 }
 
-if (DO_ASSETS || !fs.existsSync(path.join(GEN, 'app-assets.js'))) {
-  const a = buildAssets();
+/* دارایی‌های وب همیشه از web/ بازساخته می‌شوند — وگرنه تغییرِ web/ بی‌سروصدا
+   هرگز به خروجی نمی‌رسد (باگِ قبلی: فقط وقتی فایل نبود ساخته می‌شد). */
+const assetsOut = path.join(GEN, 'app-assets.js');
+const a = buildAssets();
+const nextAssets = '/* ═══ GENERATED — دستی ویرایش نکنید ═══\n' +
+  '   ساخته‌شده از web/ توسط `npm run build`. این خط در build داخلِ worker.js\n' +
+  '   قرار می‌گیرد. */\n' + a.line + '\n';
+const prevAssets = fs.existsSync(assetsOut) ? fs.readFileSync(assetsOut, 'utf8') : '';
+if (!CHECK && prevAssets !== nextAssets) {
   fs.mkdirSync(GEN, { recursive: true });
-  fs.writeFileSync(path.join(GEN, 'app-assets.js'),
-    '/* ═══ GENERATED — دستی ویرایش نکنید ═══\n' +
-    '   ساخته‌شده از web/ توسط `npm run build:assets`.\n' +
-    '   این خط در build داخلِ worker.js قرار می‌گیرد. */\n' + a.line + '\n', 'utf8');
+  fs.writeFileSync(assetsOut, nextAssets, 'utf8');
   console.log('app-assets: ' + a.count + ' فایل، ' + a.total + ' کاراکتر');
-  if (DO_ASSETS) process.exit(0);
+} else if (!CHECK) {
+  console.log('app-assets: بدون تغییر (' + a.count + ' فایل)');
 }
+if (DO_ASSETS) process.exit(0);
 
 /* ── ۲) خواندنِ ماژول‌ها به‌ترتیب ── */
 const manifest = JSON.parse(fs.readFileSync(path.join(MOD, 'manifest.json'), 'utf8'));
@@ -84,9 +90,7 @@ for (const name of manifest) {
 
 /* خطِ APP_ASSETS از فایلِ generated — جای نشانه در ماژول ۲۱ می‌نشیند
    (موقعیتِ اصلی‌اش در worker.js). */
-const genSrc = fs.readFileSync(path.join(GEN, 'app-assets.js'), 'utf8');
-const aaLine = genSrc.split('\n').find((l) => l.startsWith('const APP_ASSETS = '));
-if (!aaLine) throw new Error('در app-assets.js خطِ APP_ASSETS پیدا نشد');
+const aaLine = a.line;
 const MARK = '/* APP_ASSETS → src/generated/app-assets.js (در build برمی‌گردد) */';
 const holderIdx = parts.findIndex((p) => p.includes(MARK));
 if (holderIdx < 0) throw new Error('نشانهٔ APP_ASSETS در ماژول‌ها نیست');
@@ -116,9 +120,18 @@ try {
 /* ── ۴) نوشتن یا بررسی ── */
 if (CHECK) {
   const cur = fs.existsSync(OUT) ? fs.readFileSync(OUT, 'utf8').replace(/\r\n/g, '\n') : '';
-  if (cur === bundle) { console.log('✔ worker.js به‌روز است (' + manifest.length + ' ماژول)'); process.exit(0); }
-  console.error('✘ worker.js کهنه است — اجرا کنید: npm run build');
-  process.exit(1);
+  if (cur !== bundle) {
+    console.error('✘ worker.js کهنه است — اجرا کنید: npm run build');
+    process.exit(1);
+  }
+  /* app-assets هم باید با web/ هم‌خوان باشد؛ اگر stale باشد، build بالا
+     فقط در حافظه تازه‌اش کرده و نوشتنش نکرده. */
+  if (fs.readFileSync(assetsOut, 'utf8') !== nextAssets) {
+    console.error('✘ src/generated/app-assets.js کهنه است — اجرا کنید: npm run build');
+    process.exit(1);
+  }
+  console.log('✔ worker.js و app-assets به‌روزند (' + manifest.length + ' ماژول)');
+  process.exit(0);
 }
 fs.writeFileSync(OUT, bundle, 'utf8');
 console.log('✔ worker.js ساخته شد: ' + manifest.length + ' ماژول، ' +
