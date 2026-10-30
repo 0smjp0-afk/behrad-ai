@@ -261,14 +261,17 @@ https://api.telegram.org/bot7123456789:AAF3xYz.../setWebhook?url=https://my-ai-b
 
 پلن رایگان عالی است ولی محدودیت‌هایی دارد که باید بدانی:
 
-| محدودیت | عدد (تقریبی) | یعنی چه برای تو |
+| محدودیت | عددِ واقعیِ پلن رایگان | یعنی چه برای تو |
 |---|---|---|
-| **زمان اجرای هر درخواست** | ~۳۰ ثانیه (بیشتر = قطع) | پاسخ‌های خیلی بلند ممکن است وسطشان قطع شوند |
-| **Neurons (مصرف مدل)** | ۱۰٬۰۰۰ در روز | حدوداً چند ده سؤال ساده در روز؛ بعدش `429` می‌گیری |
-| **منابع مدل رایگان** | مشترک بین همه | بعضی وقت‌ها کند یا شلوغ است |
-| **نوشتن در D1** | ۱۰۰٬۰۰۰ سطر در روز | بسیار زیاد؛ عملاً هیچ‌وقت به این سقف نمی‌رسی |
-| **پهنای باند خروجی** | ۱۰۰٬۰۰۰ درخواست در روز | کافی برای استفادهٔ شخصی |
-| **Cron** | هر دقیقه | یادآورها دقیق کار می‌کنند |
+| **زمان پردازش (CPU)** | **۱۰ میلی‌ثانیه** برای هر درخواست | سخاوتمندانه نیست: پاسخِ خیلی سنگین یا پردازشِ محلیِ زیاد ممکن است خطا بدهد. کارِ مدل روی سرورِ خودش انجام می‌شود و جزوِ CPU تو نیست، ولی پردازشِ سنگین (مثلاً PDFِ بزرگ) به این سقف نزدیک می‌شود |
+| **مدّت کلِ درخواست** | تا وقتی کاربر وصل است سقفِ ثابتی ندارد؛ `waitUntil` تا ۳۰ ثانیه بعد از پاسخ | در عمل، پاسخ‌های خیلی بلند ممکن است وسطشان قطع شوند |
+| **Neurons (مصرف مدل)** | **۱۰٬۰۰۰ در روز** (نیمه‌شب UTC ریست) | حدوداً چند ده سؤالِ ساده در روز؛ بعدش مدل خطا می‌دهد تا فردا |
+| **خواندن از D1** | **۵٬۰۰۰٬۰۰۰ سطر در روز** | بسیار زیاد؛ عملاً هرگز نمی‌رسی |
+| **نوشتن در D1** | **۱۰۰٬۰۰۰ سطر در روز** | بسیار زیاد؛ عملاً هرگز نمی‌رسی |
+| **حجم D1** | ۵۰۰ مگابایت برای هر دیتابیس / ۵ گیگابایت برای کل حساب | برای استفادهٔ شخصی سال‌ها کافی است |
+| **درخواست‌های Worker** | **۱۰۰٬۰۰۰ در روز** | کافی برای استفادهٔ شخصی |
+| **استقرار (Deploy)** | حجمِ اسکریپت تا ۶۴ مگابایت | این ربات ~۰٫۷ مگابایت است — مشکلی نیست |
+| **Cron** | هر دقیقه (۵ تریگر در حساب) | یادآورها دقیق کار می‌کنند |
 
 **اگر مدل رایگان جواب نداد:** ربات خودکار (`autoFallback`) به یک مدل مطمئن
 می‌رود تا کارت راه بیفتد.
@@ -369,9 +372,21 @@ Neurons), long replies cut off (free-tier time limit), reminders not firing
 (Cron), dashboard login loop (password/cookies).
 
 ### 14. Free-tier limits (important)
-~30s per request; ~10,000 Neurons/day (≈ a few dozen simple questions); shared
-free model capacity; 100,000 D1 row-writes/day; 100,000 requests/day. The 5$/month
-Workers plan removes essentially all of these.
+- **CPU time: 10 ms per request.** This is the tight one. Model inference runs on
+  the provider's servers and does *not* count, but heavy local processing (a very
+  large PDF, big history trimming) can approach the cap and fail.
+- **Total request duration:** no fixed cap while the client stays connected;
+  `waitUntil` may run up to 30 s after the response. In practice, very long
+  replies can still be cut off.
+- **Workers AI: 10,000 Neurons/day** (resets at 00:00 UTC, shared by Free and
+  Paid as the free allowance) → roughly a few dozen simple questions a day; after
+  that model calls fail until the next reset.
+- **D1: 5,000,000 rows read/day, 100,000 rows written/day**, 500 MB per database
+  (5 GB per account). Plenty for personal use.
+- **100,000 Worker requests/day**; script size up to 64 MiB (this bot is ~0.7 MiB).
+- **Cron:** every minute is fine (5 triggers per account).
+
+The $5/month Workers plan lifts essentially all of these.
 
 ### 15. Cost
 For personal use this bot stays **completely free**.
