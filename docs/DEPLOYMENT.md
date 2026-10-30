@@ -29,6 +29,9 @@ This guide takes you from zero to a working bot in ~20 minutes, entirely on Clou
 1. In the Cloudflare dashboard: **Workers & Pages → Create → Worker → Deploy** (any hello-world template).
 2. Click **Edit code**, select all in the editor, delete it, and paste the entire contents of [`src/worker.js`](../src/worker.js).
 3. **Deploy.** Note your URL: `https://NAME.YOUR-SUBDOMAIN.workers.dev`.
+   If this is your first Worker, Cloudflare first asks you to pick a `workers.dev`
+   subdomain (e.g. `ali-dev`); your URL then becomes
+   `https://NAME.ali-dev.workers.dev`.
 
 ### 3. Create and bind the D1 database
 
@@ -147,6 +150,8 @@ Everything above runs on the Cloudflare free tier (100k requests/day, D1 include
 1. داشبورد کلادفلر ← **Workers & Pages ← Create ← Worker ← Deploy** (هر قالب hello-world).
 2. **Edit code** را بزنید، همهٔ محتوای ادیتور را پاک کنید و کلِ فایل [`src/worker.js`](../src/worker.js) را بچسبانید.
 3. **Deploy.** آدرس را یادداشت کنید: `https://NAME.YOUR-SUBDOMAIN.workers.dev`.
+   اگر اولین ورکرتان است، کلادفلر اول از شما یک زیردامنهٔ `workers.dev` می‌خواهد
+   (مثلاً `ali-dev`)؛ آدرستان می‌شود `https://NAME.ali-dev.workers.dev`.
 
 ### ۳. ساخت و اتصال D1
 
