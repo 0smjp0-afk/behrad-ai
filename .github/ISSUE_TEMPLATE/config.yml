@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Security report / گزارش امنیتی
-    url: https://github.com/OWNER/behrad-ai/security/advisories/new
+    url: https://github.com/0smjp0-afk/behrad-ai/security/advisories/new
     about: Report vulnerabilities privately — do not open a public issue. / آسیب‌پذیری‌ها را خصوصی گزارش کنید.
   - name: Questions & usage help / سؤال و راهنما
-    url: https://github.com/OWNER/behrad-ai/discussions
+    url: https://github.com/0smjp0-afk/behrad-ai/discussions
     about: Ask how to deploy or use the bot. / برای سؤال‌های استفاده.
