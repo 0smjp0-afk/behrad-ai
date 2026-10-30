@@ -9,8 +9,9 @@
     "node": ">=18"
   },
   "scripts": {
-    "build": "node tools/build.mjs",
-    "build:check": "node tools/build.mjs --check",
+    "build": "node scripts/build.mjs",
+    "build:check": "node scripts/build.mjs --check",
+    "build:assets": "node scripts/build.mjs --assets",
     "check": "node tools/check_syntax.mjs src/worker.js",
     "symbols": "node tools/diff_symbols.mjs src/worker.js src/worker.js",
     "test": "node test/run.mjs",
