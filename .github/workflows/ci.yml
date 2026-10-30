@@ -17,16 +17,16 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Verify APP_ASSETS is in sync with web/
-        run: node tools/build.mjs --check
+      - name: Built worker is in sync with src/modules + web
+        run: npm run build:check
 
-      - name: Syntax check (worker.js)
-        run: node tools/check_syntax.mjs src/worker.js
+      - name: Syntax check (worker)
+        run: npm run check
 
-      - name: Tests
-        run: node test/run.mjs
+      - name: Tests (i18n, module, integration)
+        run: npm test

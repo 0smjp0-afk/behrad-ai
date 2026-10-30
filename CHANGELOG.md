@@ -1,34 +1,74 @@
 # Changelog
 
 All notable changes to this project are documented here.
-Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), versions follow [SemVer](https://semver.org/).
+Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
+versions follow [Semantic Versioning](https://semver.org/).
 
-## [5.4.0] — 2026-10
+## [Unreleased] — 5.5.0 (in progress)
+
+### Changed — repository structure (breaking for contributors only)
+- **The monolith is gone.** `src/worker.js` used to be a single ~7,600-line file.
+  It is now built from **25 readable ES-module files** in `src/modules/`:
+  `01-core-constants`, `02-i18n-runtime`, `03-settings`, `04-utils`,
+  `05-storage-d1`, `06-vision`, `07-telegram`, `08-llm`, `09-link-reader`,
+  `10-voice`, `11-tools`, `12-reminders`, `13-circuit-breaker`, `14-users`,
+  `15-markdown-typing`, `16-chat-core`, `17-menus`, `18-export-backup`,
+  `19-dashboard`, `20-cron`, `21-webapp-api`, `22-handlers`,
+  `23-reminder-intent`, `24-inline-mode` (plus `00-header`).
+  Deployment is unchanged: `npm run build` still emits **one** file to paste
+  into Cloudflare.
+
+### Fixed
+- **Secret name mismatch.** The in-code header told you to set `BOT_TOKEN`, while
+  every document said `TELEGRAM_BOT_TOKEN`. The Worker now reads
+  `TELEGRAM_BOT_TOKEN` everywhere, and the built-in install guide matches the
+  docs. `BOT_TOKEN` is no longer referenced anywhere.
+- **Secrets list completed.** `OWNER_NAME`, `OWNER_NAME_EN`, `FEATURES` and
+  `WEBHOOK_SECRET` are now listed consistently in the in-code guide, README,
+  DEPLOYMENT, FEATURES and SECURITY.
+- **LICENSE not detected on GitHub.** The file had a Persian appendix that broke
+  GitHub's licensee parser (it showed `NOASSERTION`). The canonical MIT text is
+  now the whole file; the Persian note moved into the README.
 
 ### Added
-- **Bilingual bot** — every user-facing string (menus, help, errors, settings, system prompts) exists in Persian and English; users pick 🇮🇷/🇬🇧 in ⚙️ Settings, stored per-user (`lang` setting), with `fa` as default.
-- **Owner name as a secret** — the bot's identity name comes from the `OWNER_NAME` Worker secret (with optional `OWNER_NAME_EN` for Latin rendering); never hardcoded.
-- **Optional tools gate** — `FEATURES` secret disables image generation, web search, TTS/STT, translation, summarization or YouTube summaries deployment-wide.
-- **Bilingual web dashboard** — full Persian/English interface with automatic RTL↔LTR switching, language picker in Settings.
-- **Professional repository** — SECURITY policy, MIT license, contributing guide, CI (build-check + syntax + tests), dependabot, issue templates, secret scanning config.
-- **Build pipeline** — `tools/build.mjs` bundles `web/` into the worker's `APP_ASSETS` so deployment stays a single file; `--check` mode used by CI.
-- Test suite: i18n runtime tests (843+ entries, placeholder parity), bilingual module-constant tests, web dictionary completeness.
+- `docs/BEGINNER.md` — an absolute-beginner deployment guide (Persian + English)
+  that assumes zero prior knowledge, with the real free-tier limits spelled out.
+- `docs/INTERFACE.md` — text mockups of every screen (main panel, model picker,
+  settings, dashboard, app) and the common flows.
+- `scripts/build.mjs` — bundles `src/modules/` + `src/generated/app-assets.js`
+  into the deployable `src/worker.js`; `--check` and `--assets` modes.
+- `scripts/check-split.mjs` — proves the bundle's AST is identical to the source.
+- Real integration tests (`test/integration.mjs`, 55 checks) that boot the
+  actual Worker with an in-memory D1 and a mocked Telegram API and exercise
+  access control, storage, memory, models, reminders, i18n, secrets, the webhook
+  and cron.
 
-### Features carried from the 5.x line
-- Multi-model chat: Cloudflare Workers AI out of the box + any OpenAI-compatible custom service (OpenRouter, Groq, DeepSeek, vLLM, Ollama…).
-- Live streaming replies, automatic fallback to free Cloudflare models, per-user daily token limits.
-- Image generation & editing (Gemini or free Pollinations fallback), vision on photos, PDF reading, voice in/out (TTS/STT), instant translation, smart summaries.
-- Web search (Tavily), weather, crypto prices, morning briefing, YouTube summaries.
-- Reminders & scheduled AI tasks, to-do lists, long-term memory (auto-extracted), prompt library, separate chats/threads, weekly JSON backup.
-- Web dashboard + Android app shell (`/app`) over a versioned JSON API.
-- Security model: allow-list access, masked keys excluded from backups, D1-only storage, HttpOnly cookie dashboard auth with rate-limiting.
+## [5.4.0] — 2026-10-29
 
-### Security
-- Removed the legacy GitHub/Codespaces integration entirely; no trace remains in code or storage.
-- Owner name and all credentials are secrets-only; keys are masked in every UI surface and excluded from backups.
+### Added
+- **Bilingual bot (Persian/English).** Every user-facing string lives in the
+  `CAT` catalog (848 entries, `{fa, en}`); `L(env, id, …)` resolves the language
+  per request. A user picks 🇮🇷/🇬🇧 in ⚙️ Settings; the choice is stored per user
+  (`lang`, default `fa`).
+- **Owner name from a secret.** The persona name comes from `OWNER_NAME`
+  (optional `OWNER_NAME_EN` for a Latin rendering) and is never hardcoded.
+- **Optional tools.** The `FEATURES` secret turns image generation, web search,
+  TTS/STT, translation, summarization and YouTube summaries off deployment-wide.
+- **Bilingual web dashboard** (`web/`) with an automatic RTL↔LTR switch.
+- **Repository packaging:** SECURITY policy, MIT license, contributing guide,
+  CI workflow, dependabot, issue/PR templates.
+- Build pipeline that bundles `web/` into the Worker's `APP_ASSETS`, so
+  deployment stays a single file.
 
-## [5.3.0] — internal
-- v5.3 hardening pass: callback breaker, quota system for images, model-hash cache with D1 persistence.
+### Removed
+- The legacy GitHub/Codespaces integration, removed entirely from code and
+  storage — no trace remains.
 
-## [5.1.0] — internal
-- Baseline single-file worker: chat, personas, threads, memory, reminders, dashboard, Android app shell.
+## [5.3.0] — internal (not published)
+- Circuit breaker for failing custom providers; per-user image quotas; model-hash
+  cache persisted in D1; D1-only storage decision (KV dropped).
+
+## [5.1.0] — internal (not published)
+- Baseline single-file Worker: chat with Workers AI + OpenAI-compatible custom
+  services, personas, threads, long-term memory, reminders, web dashboard and an
+  Android app shell.

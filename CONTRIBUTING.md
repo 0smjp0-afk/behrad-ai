@@ -16,7 +16,25 @@ Thanks for considering a contribution! This project is a single-file Cloudflare 
    - Worker strings go through `L(env, 'id', …)` with an entry in the `CAT` catalog.
    - Web-app strings are wrapped in `W('…')` with a `WEB_I18N` entry.
 4. **Every setting has a Persian comment** next to its definition in `CFG` / `SETTINGS_DEFAULT`.
-5. **Keep the single-file deployment.** After changing anything in `web/`, run `node tools/build.mjs` so `APP_ASSETS` in `src/worker.js` is refreshed; CI rejects stale bundles.
+5. **Keep the single-file deployment.** Edit the readable modules in `src/modules/`, then run `npm run build` — it regenerates the deployable `src/worker.js` (and refreshes `APP_ASSETS` from `web/`). CI rejects a stale build, so always commit the regenerated `src/worker.js` alongside your change.
+
+### Which module do I touch?
+
+| Area | File |
+|---|---|
+| Telegram API, send/edit messages | `src/modules/07-telegram.js` |
+| Models & chat engine (Workers AI + OpenAI-compatible) | `src/modules/08-llm.js` |
+| Storage / D1 / long-term memory | `src/modules/05-storage-d1.js` |
+| Reminders, to-do, scheduled AI tasks | `src/modules/12-reminders.js`, `20-cron.js` |
+| i18n catalog & `L()` runtime | `src/modules/02-i18n-runtime.js` |
+| Defaults, personas, system prompts | `src/modules/03-settings.js` |
+| Web dashboard / app API | `src/modules/19-dashboard.js`, `21-webapp-api.js` |
+| Optional tools (image, voice, search) | `src/modules/10-voice.js`, `11-tools.js`, `06-vision.js` |
+| Bot entry point, handlers, commands | `src/modules/22-handlers.js` |
+
+All modules share one global scope (they are concatenated in the order in
+`src/modules/manifest.json`), so a function defined in one file is visible in
+the others — exactly as in the old single file.
 
 ### Workflow
 
@@ -62,7 +80,25 @@ Open an issue with the bug template: what you did, what you expected, what happe
    - متن‌های ورکر با `L(env, 'id', …)` و مدخل در کاتالوگ `CAT`.
    - متن‌های وب‌اپ با `W('…')` و مدخل در `WEB_I18N`.
 4. **هر تنظیم‌پذیر باید توضیح فارسی کنارِ خودش** در `CFG` / `SETTINGS_DEFAULT` داشته باشد.
-5. **استقرارِ تک‌فایلی حفظ شود.** بعد از هر تغییر در `web/` دستور `node tools/build.mjs` را بزنید تا `APP_ASSETS` تازه شود؛ CI بستهٔ کهنه را رد می‌کند.
+5. **استقرارِ تک‌فایلی حفظ شود.** ماژول‌های خوانا را در `src/modules/` ویرایش کنید و بعد `npm run build` بزنید — همان دستور `src/worker.js` قابلِ استقرار را از نو می‌سازد (و `APP_ASSETS` را از `web/` تازه می‌کند). CI بستهٔ کهنه را رد می‌کند، پس همیشه `src/worker.js` ساخته‌شده را همراهِ تغییرتان کامیت کنید.
+
+### کدام فایل را دست بزنم؟
+
+| بخش | فایل |
+|---|---|
+| API تلگرام، ارسال/ویرایش پیام | `src/modules/07-telegram.js` |
+| مدل‌ها و موتور چت (Workers AI + سازگار با OpenAI) | `src/modules/08-llm.js` |
+| ذخیره‌سازی / D1 / حافظهٔ بلندمدت | `src/modules/05-storage-d1.js` |
+| یادآور، تودو، تسک زمان‌بندی‌شده | `src/modules/12-reminders.js`، `20-cron.js` |
+| کاتالوگِ i18n و زمان‌اجرای `L()` | `src/modules/02-i18n-runtime.js` |
+| پیش‌فرض‌ها، شخصیت‌ها، پرامپت‌ها | `src/modules/03-settings.js` |
+| داشبورد وب / API اپ | `src/modules/19-dashboard.js`، `21-webapp-api.js` |
+| ابزارهای اختیاری (تصویر، صدا، سرچ) | `src/modules/10-voice.js`، `11-tools.js`، `06-vision.js` |
+| نقطهٔ ورود، هندلرها، دستورات | `src/modules/22-handlers.js` |
+
+همهٔ ماژول‌ها یک دامنهٔ سراسریِ مشترک دارند (به ترتیبِ
+`src/modules/manifest.json` به هم می‌چسبند)، پس تابعی که در یک فایل تعریف
+شده در بقیه هم دیده می‌شود — دقیقاً مثل فایل تک‌تکهٔ قبلی.
 
 ### مراحلِ کار
 

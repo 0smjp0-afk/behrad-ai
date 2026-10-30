@@ -10,7 +10,7 @@ Ensure: npm run verify passes; no secrets included.
 ## Changes
 - [ ] User-facing strings added in **both** fa and en (CAT / WEB_I18N)
 - [ ] New settings have Persian comments in `CFG`/`SETTINGS_DEFAULT`
-- [ ] `web/` changes re-bundled (`node tools/build.mjs`)
+- [ ] Source changed then bundled (`npm run build`); regenerated `src/worker.js` committed
 - [ ] `npm run verify` passes locally
 - [ ] No secrets, keys or user data in the diff
 

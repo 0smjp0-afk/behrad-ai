@@ -44,7 +44,8 @@ A complete AI assistant that lives in your Telegram — chat, images, voice, mem
 
 ### Quick start
 
-Full walkthrough in the **[Deployment Guide](docs/DEPLOYMENT.md)** — the short version:
+Never deployed anything before? Start with the **[Absolute Beginner's Guide](docs/BEGINNER.md)**.
+Otherwise, the full walkthrough is in the **[Deployment Guide](docs/DEPLOYMENT.md)** — the short version:
 
 1. **Create the bot:** talk to [@BotFather](https://t.me/BotFather) → `/newbot` → copy the token.
 2. **Get a Cloudflare account** (free).
@@ -58,6 +59,7 @@ Full walkthrough in the **[Deployment Guide](docs/DEPLOYMENT.md)** — the short
    | `ADMIN_ID` | ✅ | Your numeric Telegram user ID — only you can use the bot |
    | `OWNER_NAME` | recommended | The bot's persona name (never lives in code) |
    | `OWNER_NAME_EN` | optional | Latin rendering for English mode |
+   | `WEBHOOK_SECRET` | optional | Random string; verifies Telegram webhook calls |
    | `DASHBOARD_PASSWORD` | recommended | Web dashboard login |
    | `GEMINI_API_KEY` | optional | Quality images, TTS/STT, translation |
    | `SEARCH_API_KEY` | optional | Web search via Tavily |
@@ -69,11 +71,14 @@ Full walkthrough in the **[Deployment Guide](docs/DEPLOYMENT.md)** — the short
 
 ```
 behrad-ai/
-├── src/worker.js          ← THE deployment artifact (worker + bundled dashboard)
-├── web/                   ← Web dashboard sources (bundled into the worker by build)
-├── tools/                 ← build.mjs, check_syntax.mjs, diff_symbols.mjs
-├── test/                  ← i18n, module and integration tests
-├── docs/                  ← DEPLOYMENT.md, FEATURES.md (both bilingual)
+├── src/
+│   ├── modules/           ← readable source, one file per area (24 modules + header)
+│   └── worker.js          ← GENERATED deployable single file (npm run build)
+├── web/                   ← dashboard sources, bundled into APP_ASSETS
+├── scripts/               ← build.mjs (bundler), check-split.mjs (AST guard)
+├── tools/                 ← check_syntax.mjs, diff_symbols.mjs
+├── test/                  ← i18n + real integration tests (npm test)
+├── docs/                  ← BEGINNER.md, DEPLOYMENT.md, FEATURES.md, INTERFACE.md
 └── .github/               ← CI, dependabot, issue templates
 ```
 
@@ -85,7 +90,7 @@ npm run verify     # build:check + syntax + tests
 npm run build      # re-bundle web/ into src/worker.js after editing web/
 ```
 
-- Editing the bot's code: edit `src/worker.js` directly — but user-facing strings must exist in both languages (`L(env, 'id')` + a `CAT` entry; web strings wrapped in `W('…')` + a `WEB_I18N` entry). See [CONTRIBUTING.md](CONTRIBUTING.md).
+- Editing the bot's code: edit the modules in **`src/modules/`** (one file per area), then run `npm run build` to regenerate the deployable `src/worker.js`. User-facing strings must exist in both languages (`L(env, 'id')` + a `CAT` entry; web strings wrapped in `W('…')` + a `WEB_I18N` entry). See [CONTRIBUTING.md](CONTRIBUTING.md).
 - Every configurable value has a Persian comment next to its definition in `CFG` / `SETTINGS_DEFAULT`.
 
 ### Security
@@ -94,7 +99,9 @@ Secrets live only as Cloudflare Worker secrets; the owner's name arrives via `OW
 
 ### License
 
-[MIT](LICENSE) — free to use, modify and self-host.
+[MIT](LICENSE) — free to use, modify and self-host, including commercially.
+The only condition is keeping the copyright notice. No warranty is provided;
+the full text is in [LICENSE](LICENSE).
 
 ---
 
@@ -128,7 +135,8 @@ Secrets live only as Cloudflare Worker secrets; the owner's name arrives via `OW
 
 ### شروع سریع
 
-راهنمای کامل در **[راهنمای استقرار](docs/DEPLOYMENT.md)** — نسخهٔ کوتاه:
+اگر تا حالا هیچ استقراری انجام نداده‌اید، از **[راهنمای مبتدی مطلق](docs/BEGINNER.md)** شروع کنید.
+وگرنه راهنمای کامل در **[راهنمای استقرار](docs/DEPLOYMENT.md)** است — نسخهٔ کوتاه:
 
 1. **ساخت ربات:** از [@BotFather](https://t.me/BotFather) با `/newbot` ربات بسازید و توکن را کپی کنید.
 2. **حساب کلادفلر** (رایگان) بسازید.
@@ -142,6 +150,7 @@ Secrets live only as Cloudflare Worker secrets; the owner's name arrives via `OW
    | `ADMIN_ID` | ✅ | آیدی عددی تلگرام شما — فقط شما می‌توانید استفاده کنید |
    | `OWNER_NAME` | پیشنهادی | نامِ شخصیت ربات (هرگز در کد نیست) |
    | `OWNER_NAME_EN` | اختیاری | معادل لاتین برای حالت انگلیسی |
+   | `WEBHOOK_SECRET` | اختیاری | رشتهٔ تصادفی؛ صحتِ درخواست‌های وبهوک تلگرام را می‌سنجد |
    | `DASHBOARD_PASSWORD` | پیشنهادی | رمز ورود داشبورد |
    | `GEMINI_API_KEY` | اختیاری | تصویر باکیفیت، TTS/STT، ترجمه |
    | `SEARCH_API_KEY` | اختیاری | سرچ وب با Tavily |
@@ -153,11 +162,14 @@ Secrets live only as Cloudflare Worker secrets; the owner's name arrives via `OW
 
 ```
 behrad-ai/
-├── src/worker.js          ← فایلِ استقرار (ورکر + داشبوردِ بسته‌بندی‌شده)
-├── web/                   ← سورس داشبورد وب (با build داخل ورکر می‌رود)
-├── tools/                 ← build.mjs، check_syntax.mjs، diff_symbols.mjs
-├── test/                  ← تست‌های i18n، ماژول و یکپارچگی
-├── docs/                  ← DEPLOYMENT.md و FEATURES.md (هر دو دوزبانه)
+├── src/
+│   ├── modules/           ← سورس خوانا؛ هر بخش یک فایل (۲۴ ماژول + سرصفحه)
+│   └── worker.js          ← فایلِ تک‌قابلِ استقرار (ساختهٔ npm run build)
+├── web/                   ← سورس داشبورد، بسته‌بندی‌شده در APP_ASSETS
+├── scripts/               ← build.mjs (بسته‌بند)، check-split.mjs (نگهبانِ AST)
+├── tools/                 ← check_syntax.mjs، diff_symbols.mjs
+├── test/                  ← تست‌های i18n + یکپارچگیِ واقعی (npm test)
+├── docs/                  ← BEGINNER.md، DEPLOYMENT.md، FEATURES.md، INTERFACE.md
 └── .github/               ← CI، dependabot، قالب ایشو
 ```
 
@@ -169,7 +181,7 @@ npm run verify     # بررسی بسته + نحو + تست‌ها
 npm run build      # بعد از تغییر web/ دوباره بسته‌بندی کن
 ```
 
-- تغییر کد ربات: مستقیم در `src/worker.js` — ولی هر متنِ کاربر باید در هر دو زبان باشد (`L(env, 'id')` + مدخل `CAT`؛ متن‌های وب داخل `W('…')` + مدخل `WEB_I18N`). جزئیات در [CONTRIBUTING.md](CONTRIBUTING.md).
+- تغییر کد ربات: ماژول‌ها را در **`src/modules/`** ویرایش کنید (هر بخش یک فایل)، بعد `npm run build` بزنید تا `src/worker.js` تازه شود. هر متنِ کاربر باید در هر دو زبان باشد (`L(env, 'id')` + مدخل `CAT`؛ متن‌های وب داخل `W('…')` + مدخل `WEB_I18N`). جزئیات در [CONTRIBUTING.md](CONTRIBUTING.md).
 - هر مقدارِ تنظیم‌پذیر، توضیح فارسی کنارِ خودش در `CFG` / `SETTINGS_DEFAULT` دارد.
 
 ### امنیت
@@ -178,4 +190,6 @@ npm run build      # بعد از تغییر web/ دوباره بسته‌بند�
 
 ### مجوز
 
-[MIT](LICENSE) — آزاد برای استفاده، تغییر و میزبانی شخصی.
+[MIT](LICENSE) — آزاد برای استفاده، تغییر و میزبانی شخصی، حتی تجاری.
+تنها شرط، نگه‌داشتنِ اعلانِ کپی‌رایت است. هیچ ضمانتی ارائه نمی‌شود؛ متنِ
+کامل در [LICENSE](LICENSE) است.

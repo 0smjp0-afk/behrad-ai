@@ -86,6 +86,8 @@ Every one of these has a Persian comment next to its definition in `SETTINGS_DEF
 | `TELEGRAM_BOT_TOKEN` | the bot itself |
 | `ADMIN_ID` | admin identity |
 | `OWNER_NAME` / `OWNER_NAME_EN` | bot persona name |
+| `WEBHOOK_SECRET` | صحتِ درخواست‌های وبهوک |
+| `WEBHOOK_SECRET` | verifies Telegram webhook requests |
 | `DASHBOARD_PASSWORD` | dashboard |
 | `GEMINI_API_KEY` | images, TTS/STT, translation, summaries |
 | `SEARCH_API_KEY` | web search |
@@ -93,7 +95,7 @@ Every one of these has a Persian comment next to its definition in `SETTINGS_DEF
 
 ### Architecture
 
-- **One file:** `src/worker.js` — worker logic + the whole web dashboard bundled as `APP_ASSETS` (`tools/build.mjs`).
+- **One deployable file, many source files:** the readable source is `src/modules/` (24 modules); `npm run build` bundles them + the web dashboard (`APP_ASSETS`, built from `web/`) into the single deployable `src/worker.js`.
 - **Storage:** Cloudflare D1 only, key/value tables, all keys namespaced per user (`u:<id>`, `us:<uid>`, `uq:<uid>:<date>`, …).
 - **i18n:** every string has an id in the `CAT` catalog (`{fa, en}`, `%1..%N` placeholders); `L(env, id, …)` resolves per-request language. Web app mirrors this with `W('…')` + `WEB_I18N`.
 - **No trace of removed features:** the legacy GitHub/Codespaces integration was fully excised from code and storage.
@@ -175,6 +177,6 @@ Every one of these has a Persian comment next to its definition in `SETTINGS_DEF
 
 ### معماری
 
-- **تک‌فایل:** `src/worker.js` شامل منطق ورکر + داشبوردِ بسته‌بندی‌شده است (`web/` با `tools/build.mjs`).
+- **یک فایلِ قابل استقرار، چند فایلِ سورس:** سورسِ خوانا در `src/modules/` است (۲۴ ماژول)؛ `npm run build` آن‌ها را همراهِ داشبورد وب (‏`APP_ASSETS` که از `web/` ساخته می‌شود) در یک `src/worker.js` قابل استقرار می‌بندد.
 - **ذخیره‌سازی:** فقط D1؛ کلیدها فضای‌نام‌بندی‌شده (`u:<uid>`, `us:<uid>`, …).
 - **i18n:** هر متن شناسه‌ای در کاتالوگ `CAT` دارد (`{fa, en}` با جای‌نگهدار `%1…%N`)؛ `L(env, id, …)` زبانِ هر درخواست را برمی‌گرداند. وب‌اپ با `W('…')` و `WEB_I18N` همان کار را می‌کند و RTL/LTR خودکار است.

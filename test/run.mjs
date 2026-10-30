@@ -190,6 +190,18 @@ section('web bundle + i18n');
   }
 }
 
+/* ═══════════════ آزمونِ یکپارچگی (worker behaviour) ═══════════════ */
+/* آزمون‌های یکپارچگی در test/integration.mjs اجرا می‌شوند و خروجیِ
+   خودشان را چاپ می‌کنند؛ اینجا فقط یک sanity-check جمعی انجام می‌دهیم. */
+await runIntegration();
+/* integration suite در همان پروسه اجرا می‌شود (خروجیِ خودش را چاپ می‌کند). */
+async function runIntegration() {
+  try {
+    const mod = await import("./integration.mjs");
+    void mod;
+  } catch (e) { fail++; console.log("✘ integration suite — " + e.message); }
+}
+
 /* ═══════════════ نتیجه ═══════════════ */
 console.log('\n════════════════════════════════');
 console.log('PASS ' + pass + ' | FAIL ' + fail);

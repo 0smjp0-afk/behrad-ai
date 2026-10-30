@@ -51,6 +51,7 @@ Worker → **Settings → Variables and Secrets → Add**. Type: **Secret** (not
 | `ADMIN_ID` | ✅ | Your numeric Telegram ID (get it from [@userinfobot](https://t.me/userinfobot)) |
 | `OWNER_NAME` | recommended | The name the bot identifies with — e.g. `رضا` |
 | `OWNER_NAME_EN` | optional | Latin version for English mode — e.g. `Reza` |
+| `WEBHOOK_SECRET` | optional | Random string; lets the Worker reject forged webhook calls |
 | `DASHBOARD_PASSWORD` | recommended | Password for the web dashboard |
 | `GEMINI_API_KEY` | optional | From Google AI Studio — images, TTS/STT, translation |
 | `SEARCH_API_KEY` | optional | From Tavily — web search |
@@ -91,7 +92,7 @@ Only `ADMIN_ID` works at first. As admin: open the bot's user panel (👥) and a
 
 ### 9. Updating
 
-The whole app is `src/worker.js` (including the dashboard — `web/` is bundled into it by `tools/build.mjs`). To update: paste the new `src/worker.js` and deploy. User data survives — the schema is migrated lazily.
+The deployable artifact is a single file, `src/worker.js` — it is generated from `src/modules/` and the dashboard in `web/` (run `npm run build`). To update: paste the new `src/worker.js` and deploy. User data survives — the schema is migrated lazily.
 
 ### Troubleshooting
 
@@ -160,6 +161,7 @@ Everything above runs on the Cloudflare free tier (100k requests/day, D1 include
 | `ADMIN_ID` | ✅ | آیدی عددی شما (از [@userinfobot](https://t.me/userinfobot)) |
 | `OWNER_NAME` | پیشنهادی | نامی که ربات با خودش معرفی می‌کند — مثل `رضا` |
 | `OWNER_NAME_EN` | اختیاری | معادل لاتین برای حالت انگلیسی — مثل `Reza` |
+| `WEBHOOK_SECRET` | اختیاری | رشتهٔ تصادفی؛ درخواست‌های جعلیِ وبهوک را رد می‌کند |
 | `DASHBOARD_PASSWORD` | پیشنهادی | رمز داشبورد وب |
 | `GEMINI_API_KEY` | اختیاری | از Google AI Studio — تصویر، صدا، ترجمه |
 | `SEARCH_API_KEY` | اختیاری | از Tavily — سرچ وب |
@@ -199,7 +201,7 @@ curl "https://api.telegram.org/bot<TOKEN>/setWebhook?url=https://YOUR-WORKER.wor
 
 ### ۹. به‌روزرسانی
 
-همه‌چیز داخل `src/worker.js` است (داشبورد هم — `web/` با `tools/build.mjs` داخلش بسته‌بندی می‌شود). برای به‌روزرسانی فقط فایل جدید را بچسبانید و Deploy کنید. دادهٔ کاربرها می‌ماند — مهاجرتِ اسکیمای خودکار است.
+فایلِ قابلِ استقرار، یک فایلِ واحد است: `src/worker.js` — که از `src/modules/` و داشبوردِ `web/` ساخته می‌شود (`npm run build`). برای به‌روزرسانی فقط فایلِ جدید را بچسبانید و Deploy کنید. دادهٔ کاربرها می‌ماند — مهاجرتِ اسکیمای خودکار است.
 
 ### رفع اشکال
 
