@@ -63,11 +63,19 @@ Worker → **Settings → Variables and Secrets → Add**. Type: **Secret** (not
 
 ### 5. Connect Telegram
 
-1. Worker → **Settings → Triggers → Add Cron Trigger** → `*/5 * * * * *` if your plan allows, otherwise `*/5 * * * *` (runs reminders/backup).
-2. Visit `https://YOUR-WORKER.workers.dev/webhook-set?secret=TELEGRAM_TOKEN_VALUE` **once** — or set the webhook with BotFather-less one-liner:
+1. Worker → **Settings → Triggers → Add Cron Trigger** → `* * * * *` (**every minute**).
+   Reminders only fire on a cron tick, so a 5-minute schedule would deliver them up to
+   5 minutes late; every minute costs nothing on the free tier.
+2. Open this URL **once** in your browser (replace `<TOKEN>` with your `TELEGRAM_BOT_TOKEN`
+   and `<WORKER_URL>` with your worker address). If you set `WEBHOOK_SECRET`, append
+   `&secret_token=<that value>`:
+
+   `https://api.telegram.org/bot<TOKEN>/setWebhook?url=<WORKER_URL>/webhook`
+
+   You should see `{"ok":true,...}`. Same thing via curl:
 
 ```bash
-curl "https://api.telegram.org/bot<TOKEN>/setWebhook?url=https://YOUR-WORKER.workers.dev/webhook"
+curl "https://api.telegram.org/bot<TOKEN>/setWebhook?url=<WORKER_URL>/webhook"
 ```
 
 3. **Message your bot on Telegram.** First message → access denied (correct — you haven't been added yet as anything but admin; admin works immediately).
@@ -173,8 +181,16 @@ Everything above runs on the Cloudflare free tier (100k requests/day, D1 include
 
 ### ۵. وصل‌کردن تلگرام
 
-1. ورکر ← **Settings ← Triggers ← Add Cron Trigger** ← اگر پلن اجازه می‌دهد `*/5 * * * * *` وگرنه `*/5 * * * *` (برای یادآورها و بکاپ هفتگی).
-2. یک‌بار آدرس `https://YOUR-WORKER.workers.dev/webhook-set?secret=TELEGRAM_TOKEN` را باز کنید — یا با یک خط:
+1. ورکر ← **Settings ← Triggers ← Add Cron Trigger** ← `* * * * *` (**هر دقیقه**).
+   یادآورها فقط با تیکِ cron شلیک می‌شوند؛ با فاصلهٔ ۵ دقیقه تا ۵ دقیقه دیر می‌رسند.
+   هر دقیقه در پلن رایگان هزینه‌ای ندارد.
+2. این آدرس را **یک‌بار** در مرورگر باز کنید (جای `<TOKEN>` توکنِ `TELEGRAM_BOT_TOKEN` و
+   جای `<WORKER_URL>` آدرسِ ورکر). اگر `WEBHOOK_SECRET` گذاشتید، `&secret_token=<همان مقدار>`
+   را هم آخرش اضافه کنید:
+
+   `https://api.telegram.org/bot<TOKEN>/setWebhook?url=<WORKER_URL>/webhook`
+
+   باید `{"ok":true,...}` ببینید. با curl هم همین:
 
 ```bash
 curl "https://api.telegram.org/bot<TOKEN>/setWebhook?url=https://YOUR-WORKER.workers.dev/webhook"

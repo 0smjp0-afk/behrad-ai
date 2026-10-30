@@ -192,10 +192,10 @@
 تا این کار را نکنی، ربات ساکت می‌ماند. این آدرس را در مرورگر باز کن (فقط یک بار):
 
 ```
-https://api.telegram.org/bot<TOKEN>/setWebhook?url=<WRITER_URL>/webhook
+https://api.telegram.org/bot<TOKEN>/setWebhook?url=<WORKER_URL>/webhook
 ```
 
-جای `<TOKEN>` توکنِ مرحلهٔ ۲ را بگذار، و جای `<WRITER_URL>` آدرسِ مرحلهٔ ۵.
+جای `<TOKEN>` توکنِ مرحلهٔ ۲ را بگذار، و جای `<WORKER_URL>` آدرسِ مرحلهٔ ۵.
 اگر `WEBHOOK_SECRET` گذاشتی، این را هم آخرش اضافه کن:
 `&secret_token=<مقدارِ همان راز>`
 
