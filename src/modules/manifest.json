@@ -21,7 +21,9 @@
   "19-dashboard.js",
   "20-cron.js",
   "21-webapp-api.js",
+  "21b-widgets.js",
   "22-handlers.js",
+  "22b-messages.js",
   "23-reminder-intent.js",
   "24-inline-mode.js"
 ]

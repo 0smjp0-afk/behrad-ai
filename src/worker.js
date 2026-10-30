@@ -5114,6 +5114,15 @@ async function appRoute(env, request, url, p, method) {
     return jsonRes({ error: L(env, 'm12ktwun') }, 400);
   }
 
+/* ═══════════════════════════════════════════════════════════════
+   behrad-ai — 21b-widgets
+   ویجت‌های هوشمند 🧩: ساخت/اعتبارسنجی/آب‌وهوا/یادآور
+   ─────────────────────────────────────────────────────────────
+   بخشی از سورسِ ماژولار. با «npm run build» به worker.js (تک‌فایلِ
+   استقرار) بسته می‌شود. همهٔ فایل‌های src/modules یک دامنهٔ سراسریِ
+   مشترک دارند؛ ترتیبشان در src/modules/manifest.json است.
+   ═══════════════════════════════════════════════════════════════ */
+
   /* ── ویجت‌های هوشمند 🧩 (v4.8): برد شیشه‌ای اپ — spec با AI از پرامپت فارسی ── */
   if (p === '/api/v1/widgets') {
     if (method === 'GET') {
@@ -6669,6 +6678,14 @@ const HELP_TEXT_EN =
   '🎬 <b>YouTube links:</b> send a link and I read the subtitles and summarize them\n' +
   '🆓 <b>Images without a key:</b> free Pollinations fallback (can be turned off under ⚙️ Settings)';
 
+/* ═══════════════════════════════════════════════════════════════
+   behrad-ai — 22b-messages
+   پیام‌ها: onMessage، دستورات، پیوست‌ها، تشخیص یادآور
+   ─────────────────────────────────────────────────────────────
+   بخشی از سورسِ ماژولار. با «npm run build» به worker.js (تک‌فایلِ
+   استقرار) بسته می‌شود. همهٔ فایل‌های src/modules یک دامنهٔ سراسریِ
+   مشترک دارند؛ ترتیبشان در src/modules/manifest.json است.
+   ═══════════════════════════════════════════════════════════════ */
 async function onMessage(env, m) {
   if (!m.from || !m.chat) return;
   const uid = String(m.from.id);
