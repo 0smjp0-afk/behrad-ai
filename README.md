@@ -72,8 +72,8 @@ Otherwise, the full walkthrough is in the **[Deployment Guide](docs/DEPLOYMENT.m
 ```
 behrad-ai/
 ├── src/
-│   ├── modules/           ← readable source, one file per area (24 modules + header)
-│   └── worker.js          ← GENERATED deployable single file (npm run build)
+│   ├── modules/           ← readable source, one file per area (27 modules + header)
+│   └── worker.js          ← GENERATED single deployable file (npm run build) — this is what you paste into Cloudflare
 ├── web/                   ← dashboard sources, bundled into APP_ASSETS
 ├── scripts/               ← build.mjs (bundler), check-split.mjs (AST guard)
 ├── tools/                 ← check_syntax.mjs, diff_symbols.mjs
@@ -163,8 +163,8 @@ the full text is in [LICENSE](LICENSE).
 ```
 behrad-ai/
 ├── src/
-│   ├── modules/           ← سورس خوانا؛ هر بخش یک فایل (۲۴ ماژول + سرصفحه)
-│   └── worker.js          ← فایلِ تک‌قابلِ استقرار (ساختهٔ npm run build)
+│   ├── modules/           ← سورس خوانا؛ هر بخش یک فایل (۲۷ ماژول + سرصفحه)
+│   └── worker.js          ← فایلِ تک‌قابلِ استقرار (ساختهٔ npm run build) — همین را در کلادفلر Paste می‌کنید
 ├── web/                   ← سورس داشبورد، بسته‌بندی‌شده در APP_ASSETS
 ├── scripts/               ← build.mjs (بسته‌بند)، check-split.mjs (نگهبانِ AST)
 ├── tools/                 ← check_syntax.mjs، diff_symbols.mjs
